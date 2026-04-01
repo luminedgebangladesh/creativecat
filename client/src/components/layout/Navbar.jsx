@@ -82,14 +82,12 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              className="nav-link"
+              className={`nav-link${isActive(link.href) ? ' nav-link--active' : ''}`}
               data-cursor-link="true"
               onClick={e => { e.preventDefault(); handleNavClick(link.href) }}
               style={{
-                color: isActive(link.href) ? 'var(--accent)' : '#0f0f14',
                 fontSize: '14px',
                 fontWeight: isActive(link.href) ? '700' : '500',
-                transition: 'color 0.2s',
               }}
             >
               {link.label}
@@ -98,7 +96,7 @@ export default function Navbar() {
         </nav>
 
         {/* Right — phone + hamburger */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', paddingRight: '12px' }}>
           <a
             href="tel:+8801833183619"
             className="phone-link"
@@ -132,22 +130,21 @@ export default function Navbar() {
           borderTop: menuOpen ? '1px solid rgba(0,0,0,0.08)' : 'none',
         }}
       >
-        <div style={{ padding: '12px 24px 24px' }}>
+        <div style={{ padding: '20px 24px 28px' }}>
           {navLinks.map(link => (
             <a
               key={link.label}
               href={link.href}
+              className={`mobile-nav-link${isActive(link.href) ? ' mobile-nav-link--active' : ''}`}
               onClick={e => { e.preventDefault(); handleNavClick(link.href) }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                color: isActive(link.href) ? 'var(--accent)' : '#0f0f14',
                 fontSize: '15px',
                 fontWeight: isActive(link.href) ? '700' : '500',
                 padding: '13px 0',
                 borderBottom: '1px solid rgba(0,0,0,0.06)',
-                transition: 'color 0.2s',
               }}
             >
               {link.label}
@@ -158,7 +155,7 @@ export default function Navbar() {
           ))}
           <a
             href="tel:+8801833183619"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent)', fontSize: '14px', fontWeight: '600', marginTop: '16px' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent)', fontSize: '14px', fontWeight: '600', marginTop: '20px' }}
           >
             <Phone size={14} />
             (+88) 01833-183619
@@ -174,6 +171,21 @@ export default function Navbar() {
         }
         @media (min-width: 901px) {
           .hamburger { display: none !important; }
+        }
+
+        /* Mobile nav link hover effect */
+        .mobile-nav-link {
+          color: #0f0f14;
+          text-decoration: none;
+          transition: color 0.2s ease, padding-left 0.2s ease;
+        }
+        .mobile-nav-link:hover {
+          color: var(--accent);
+          padding-left: 6px;
+        }
+        .mobile-nav-link--active {
+          color: var(--accent);
+          font-weight: 700;
         }
       `}</style>
     </header>
