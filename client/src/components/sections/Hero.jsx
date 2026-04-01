@@ -97,8 +97,8 @@ export default function Hero() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }} className="hero-grid">
 
           {/* Left */}
-          <div>
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div className="hero-left">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ display: 'flex' }} className="hero-tag-wrap">
               <span className="section-tag">Creative Cat Digital Marketing Agency</span>
             </motion.div>
 
@@ -151,6 +151,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
+              className="hero-clients"
               style={{ display: 'flex', alignItems: 'center', gap: '16px' }}
             >
               <div style={{ display: 'flex' }}>
@@ -181,6 +182,7 @@ export default function Hero() {
           >
             {/* Background circles — layer 1 */}
             <motion.div
+              className="hero-circle-1"
               style={{
                 x: bgX, y: bgY,
                 width: '380px', height: '380px', borderRadius: '50%',
@@ -190,6 +192,7 @@ export default function Hero() {
               }}
             />
             <motion.div
+              className="hero-circle-2"
               style={{
                 x: bgX, y: bgY,
                 width: '320px', height: '320px', borderRadius: '50%',
@@ -201,6 +204,7 @@ export default function Hero() {
             {/* Cat image — layer 2 */}
             <motion.img
               src={CAT_IMG} alt="Creative Cat"
+              className="hero-cat-img"
               style={{ x: catX, y: catY, maxHeight: '440px', width: 'auto', position: 'relative', zIndex: 1 }}
             />
 
@@ -226,6 +230,7 @@ export default function Hero() {
 
             {/* Stat card — top right */}
             <motion.div
+              className="hero-stat-card hero-stat-top"
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
               style={{
@@ -236,12 +241,13 @@ export default function Hero() {
                 border: '1px solid rgba(0,0,0,0.05)',
               }}
             >
-              <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-heading)', color: 'var(--accent)' }}>180+</div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '500' }}>Brands Joined</div>
+              <div className="hero-stat-value" style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-heading)', color: 'var(--accent)' }}>180+</div>
+              <div className="hero-stat-label" style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '500' }}>Brands Joined</div>
             </motion.div>
 
             {/* Stat card — bottom left */}
             <motion.div
+              className="hero-stat-card hero-stat-bottom"
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
               style={{
@@ -252,8 +258,8 @@ export default function Hero() {
                 border: '1px solid rgba(0,0,0,0.05)',
               }}
             >
-              <div style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-heading)', color: 'var(--accent)' }}>85%</div>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '500' }}>Sales Growth</div>
+              <div className="hero-stat-value" style={{ fontSize: '20px', fontWeight: '800', fontFamily: 'var(--font-heading)', color: 'var(--accent)' }}>85%</div>
+              <div className="hero-stat-label" style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '500' }}>Sales Growth</div>
             </motion.div>
           </motion.div>
         </div>
@@ -261,15 +267,48 @@ export default function Hero() {
 
       <style>{`
         @media (max-width: 768px) {
-          .hero-grid { grid-template-columns: 1fr !important; }
-          .hero-right { display: none !important; }
+          /* Stack grid, cat on top */
+          .hero-grid  { grid-template-columns: 1fr !important; gap: 0 !important; }
+          .hero-right { order: -1 !important; }
+
+          /* Center all left-column text */
+          .hero-left  { text-align: center !important; }
+          .hero-left .section-subtitle { margin-left: auto !important; margin-right: auto !important; }
+          .hero-tag-wrap { justify-content: center !important; }
+          .hero-buttons  { justify-content: center !important; }
+          .hero-clients  { justify-content: center !important; }
+
+          /* Scale cat section */
+          .hero-right {
+            min-height: 300px !important;
+            overflow: hidden !important;
+          }
+          .hero-circle-1 { width: 260px !important; height: 260px !important; }
+          .hero-circle-2 { width: 210px !important; height: 210px !important; }
+          .hero-cat-img  { max-height: 280px !important; }
+
+          .hero-stat-card {
+            padding: 8px 14px !important;
+            min-width: 110px !important;
+            border-radius: 10px !important;
+          }
+          .hero-stat-top    { top: 6% !important; right: 4% !important; }
+          .hero-stat-bottom { bottom: 4% !important; left: 4% !important; }
+          .hero-stat-value  { font-size: 16px !important; }
+          .hero-stat-label  { font-size: 11px !important; }
         }
+
         @media (max-width: 480px) {
-          .hero-grid { gap: 0 !important; }
-          .hero-buttons { gap: 12px !important; }
+          .hero-right    { min-height: 240px !important; }
+          .hero-circle-1 { width: 200px !important; height: 200px !important; }
+          .hero-circle-2 { width: 160px !important; height: 160px !important; }
+          .hero-cat-img  { max-height: 220px !important; }
+          .hero-stat-card { min-width: 96px !important; }
+
+          .hero-buttons { gap: 10px !important; flex-direction: column !important; align-items: stretch !important; }
           .hero-buttons .btn-primary,
           .hero-buttons .btn-dark,
-          .hero-buttons .btn-outline { width: 100%; justify-content: center; }
+          .hero-buttons .btn-outline { width: 100% !important; justify-content: center !important; }
         }
       `}</style>
     </section>
