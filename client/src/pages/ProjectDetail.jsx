@@ -263,31 +263,6 @@ function modalControlStyle(disabled, borderColor) {
   }
 }
 
-function StoryCard({ label, copy, project, delay = 0 }) {
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45, delay }}
-      style={{
-        background: 'rgba(255,255,255,0.06)',
-        borderRadius: '26px',
-        border: `1px solid ${project.accentColor}22`,
-        padding: '28px',
-        backdropFilter: 'blur(10px)',
-      }}
-    >
-      <div style={{ color: project.accentColor, fontSize: '11px', fontWeight: '800', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '14px' }}>
-        {label}
-      </div>
-      <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '16px', lineHeight: '1.85' }}>
-        {copy}
-      </p>
-    </motion.article>
-  )
-}
-
 export default function ProjectDetail() {
   const { slug } = useParams()
   const project = projects.find(p => p.slug === slug)
@@ -308,12 +283,6 @@ export default function ProjectDetail() {
   const galleryAspectRatio = project.galleryAspectRatio || '4 / 5'
   const galleryPadding = project.galleryPadding || '16px'
   const galleryBackground = project.galleryBackground || `linear-gradient(180deg, #ffffff 0%, ${project.brandColor}10 100%)`
-  const storyCards = [
-    project.challenge ? { label: 'Challenge', copy: project.challenge } : null,
-    project.approach ? { label: 'Approach', copy: project.approach } : null,
-    project.outcome ? { label: 'Outcome', copy: project.outcome } : null,
-  ].filter(Boolean)
-
   return (
     <>
       <Helmet>
@@ -523,42 +492,6 @@ export default function ProjectDetail() {
             </motion.div>
           </div>
         </section>
-
-        {storyCards.length > 0 && (
-          <section style={{ background: '#0b1120', padding: '84px 0' }}>
-            <div className="container">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.42 }}
-                style={{ textAlign: 'center', marginBottom: '36px' }}
-              >
-                <span style={{ display: 'inline-flex', alignItems: 'center', padding: '7px 15px', borderRadius: '999px', background: 'rgba(255,255,255,0.08)', color: '#dbe4ff', fontSize: '11px', fontWeight: '800', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '16px' }}>
-                  Creative Direction
-                </span>
-                <h2 style={{ fontSize: 'clamp(30px, 4vw, 48px)', fontWeight: '800', color: '#fff', lineHeight: 1.02, marginBottom: '12px' }}>
-                  How the case study was shaped
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: '16px', lineHeight: '1.85', maxWidth: '60ch', margin: '0 auto' }}>
-                  A deeper look at the creative decisions, constraints, and outcomes that shaped this project.
-                </p>
-              </motion.div>
-
-              <div className="detail-story-grid" style={{ display: 'grid', gridTemplateColumns: storyCards.length >= 3 ? 'repeat(3, minmax(0, 1fr))' : 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px' }}>
-                {storyCards.map((card, index) => (
-                  <StoryCard
-                    key={card.label}
-                    label={card.label}
-                    copy={card.copy}
-                    project={project}
-                    delay={index * 0.06}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* ── Gallery ──────────────────────────────────────── */}
         <section style={{ background: '#f8f9fc', padding: '80px 0' }}>

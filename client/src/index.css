@@ -71,6 +71,7 @@ input, textarea, select { font-family: var(--font-body); }
   margin: 0 auto;
   padding: 0 24px;
 }
+
 section { padding: 90px 0; }
 
 /* ── Nav links (underline + smooth hover) ───────────────────── */

@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import SectionHeading from '../ui/SectionHeading'
-import { secondaryProjects } from '../../data/portfolio'
+import { creativeServicesPrimary, creativeServicesSecondary } from '../../data/portfolio'
 import ShowcaseCard from '../ui/ShowcaseCard'
 
 export default function SecondaryPortfolio() {
@@ -20,21 +21,41 @@ export default function SecondaryPortfolio() {
             />
           </div>
           <div style={{ textAlign: 'right' }} className="sec-port-action">
-            <a href="/projects/" className="btn-primary" style={{ display: 'inline-block' }}>Explore Project Work</a>
+            <Link to="/projects" className="btn-primary" style={{ display: 'inline-block' }}>Explore Project Work</Link>
           </div>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-          gap: '28px',
-        }} className="sec-port-grid">
-          {secondaryProjects.map((project, i) => (
+        <div className="sec-port-grid-row1">
+          {creativeServicesPrimary.map((project, i) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+            >
+              <ShowcaseCard
+                image={project.image}
+                title={project.title}
+                description={project.description}
+                hoverText={project.description}
+                badge={project.category}
+                metaTag={project.category}
+                primaryColor={project.brandColor}
+                secondaryColor={project.accentColor}
+                aspectRatio="5 / 4"
+                metaVariant="compact"
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="sec-port-grid-row2">
+          {creativeServicesSecondary.map((project, i) => (
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: (creativeServicesPrimary.length + i) * 0.08 }}
             >
               <ShowcaseCard
                 image={project.image}
@@ -54,12 +75,28 @@ export default function SecondaryPortfolio() {
       </div>
 
       <style>{`
+        .sec-port-grid-row1 {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 28px;
+          margin-bottom: 28px;
+        }
+        .sec-port-grid-row2 {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 28px;
+        }
+        @media (max-width: 1100px) {
+          .sec-port-grid-row1 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .sec-port-grid-row2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
         @media (max-width: 768px) {
           .sec-port-header { grid-template-columns: 1fr !important; text-align: left !important; gap: 20px !important; }
           .sec-port-action { text-align: left !important; }
         }
         @media (max-width: 640px) {
-          .sec-port-grid { grid-template-columns: 1fr !important; }
+          .sec-port-grid-row1,
+          .sec-port-grid-row2 { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </section>

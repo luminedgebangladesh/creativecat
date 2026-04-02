@@ -14,7 +14,7 @@ const competencies = [
 const aboutStats = [
   { target: 85,  suffix: '+', label: 'Satisfied Clients' },
   { target: 180, suffix: '+', label: 'Brands Joined' },
-  { target: 6,   suffix: '+', label: 'Years Experience' },
+  { target: 8,   suffix: '+', label: 'Years Experience' },
   { target: 50,  suffix: '+', label: 'Marketing Experts' },
 ]
 
@@ -115,7 +115,7 @@ export default function About() {
           >
             <span className="section-tag">ABOUT CREATIVE CAT</span>
             <h2 className="section-title">
-              6+ Years Of Experience In Digital Marketing
+              8+ Years Of Experience In Digital Marketing
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.8', marginBottom: '32px' }}>
               Our team consists of digital marketing experts who are passionate about helping businesses succeed online.

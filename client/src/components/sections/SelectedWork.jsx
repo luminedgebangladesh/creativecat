@@ -6,7 +6,10 @@ import ShowcaseCard from '../ui/ShowcaseCard'
 
 export default function SelectedWork() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
-  const featured = projects.slice(0, 4)
+  const featuredSlugs = ['ftz-smart-security', 'luminedge', 'royal-international-college', 'aist']
+  const featured = featuredSlugs
+    .map((slug) => projects.find((project) => project.slug === slug))
+    .filter(Boolean)
 
   return (
     <section ref={ref} style={{ background: '#f7f8ff', padding: '80px 0' }}>

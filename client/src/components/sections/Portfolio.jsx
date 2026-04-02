@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   motion,
@@ -16,6 +16,80 @@ import { projects } from '../../data/portfolio'
 const revealEase = [0.22, 1, 0.36, 1]
 const tiltSpring = { stiffness: 180, damping: 22, mass: 0.8 }
 const titleWords = ['Explore', 'Our', 'Portfolio']
+
+/** Loop height for “infinite” star scroll (same idea as @screenshake CodePen). */
+const STAR_LOOP_PX = 2000
+
+/** Star pixels tinted to Creative Cat palette (orange #ff6900, purple #5b4e9e, white). */
+const STAR_COLORS = [
+  'rgba(255,255,255,0.92)',
+  'rgba(255,255,255,0.55)',
+  'rgba(255,105,0,0.88)',
+  'rgba(255,105,0,0.42)',
+  'rgba(180,165,235,0.9)',
+  'rgba(91,78,158,0.72)',
+  'rgba(255,210,185,0.55)',
+]
+
+function mulberry32(seed) {
+  return function next() {
+    let t = (seed += 0x6d2b79f5)
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+function buildStarBoxShadow(count, spread, seed) {
+  const rand = mulberry32(seed)
+  const parts = []
+  for (let i = 0; i < count; i++) {
+    const x = Math.floor(rand() * spread)
+    const y = Math.floor(rand() * spread)
+    const c = STAR_COLORS[Math.floor(rand() * STAR_COLORS.length)]
+    parts.push(`${x}px ${y}px ${c}`)
+  }
+  return parts.join(', ')
+}
+
+function PortfolioParallaxStars({ reduceMotion }) {
+  const spread = STAR_LOOP_PX
+  const small = useMemo(() => buildStarBoxShadow(420, spread, 0x5f4152), [spread])
+  const medium = useMemo(() => buildStarBoxShadow(140, spread, 0x5f4153), [spread])
+  const big = useMemo(() => buildStarBoxShadow(64, spread, 0x5f4154), [spread])
+
+  return (
+    <div className="portfolio-parallax-stars" aria-hidden="true">
+      <div
+        className={`portfolio-parallax-stars__layer portfolio-parallax-stars__layer--1${reduceMotion ? ' portfolio-parallax-stars__layer--static' : ''}`}
+      >
+        <div className="portfolio-parallax-stars__pixel portfolio-parallax-stars__pixel--1" style={{ boxShadow: small }} />
+        <div
+          className="portfolio-parallax-stars__pixel portfolio-parallax-stars__pixel--1 portfolio-parallax-stars__pixel--dup"
+          style={{ boxShadow: small, top: STAR_LOOP_PX }}
+        />
+      </div>
+      <div
+        className={`portfolio-parallax-stars__layer portfolio-parallax-stars__layer--2${reduceMotion ? ' portfolio-parallax-stars__layer--static' : ''}`}
+      >
+        <div className="portfolio-parallax-stars__pixel portfolio-parallax-stars__pixel--2" style={{ boxShadow: medium }} />
+        <div
+          className="portfolio-parallax-stars__pixel portfolio-parallax-stars__pixel--2 portfolio-parallax-stars__pixel--dup"
+          style={{ boxShadow: medium, top: STAR_LOOP_PX }}
+        />
+      </div>
+      <div
+        className={`portfolio-parallax-stars__layer portfolio-parallax-stars__layer--3${reduceMotion ? ' portfolio-parallax-stars__layer--static' : ''}`}
+      >
+        <div className="portfolio-parallax-stars__pixel portfolio-parallax-stars__pixel--3" style={{ boxShadow: big }} />
+        <div
+          className="portfolio-parallax-stars__pixel portfolio-parallax-stars__pixel--3 portfolio-parallax-stars__pixel--dup"
+          style={{ boxShadow: big, top: STAR_LOOP_PX }}
+        />
+      </div>
+    </div>
+  )
+}
 
 function PortfolioCard({ project, index, inView, reduceMotion }) {
   const [hovered, setHovered] = useState(false)
@@ -208,20 +282,20 @@ export default function Portfolio() {
   const gridY = useTransform(scrollYProgress, [0, 1], [reduceMotion ? 0 : 18, reduceMotion ? 0 : -22])
   const ambientOneY = useTransform(scrollYProgress, [0, 1], [reduceMotion ? 0 : 90, reduceMotion ? 0 : -70])
   const ambientTwoY = useTransform(scrollYProgress, [0, 1], [reduceMotion ? 0 : -50, reduceMotion ? 0 : 80])
-  const ambientThreeRotate = useTransform(scrollYProgress, [0, 1], [reduceMotion ? 0 : -8, reduceMotion ? 0 : 12])
 
   return (
     <section
       id="portfolio"
       ref={setRefs}
       style={{
-        background: 'var(--bg-primary)',
+        background: 'radial-gradient(ellipse 130% 90% at 50% 100%, #1b2735 0%, #101525 42%, #090a0f 100%)',
         padding: '100px 0',
         position: 'relative',
         overflow: 'hidden',
         isolation: 'isolate',
       }}
     >
+      <PortfolioParallaxStars reduceMotion={reduceMotion} />
       <motion.div
         className="portfolio-modern-ambient portfolio-modern-ambient--one"
         aria-hidden="true"
@@ -236,26 +310,6 @@ export default function Portfolio() {
         animate={reduceMotion ? { opacity: 0.48 } : { opacity: [0.32, 0.58, 0.4], scale: [0.96, 1.08, 1] }}
         transition={{ duration: 16, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
       />
-      <motion.div
-        className="portfolio-modern-ambient portfolio-modern-ambient--three"
-        aria-hidden="true"
-        style={{ rotate: ambientThreeRotate }}
-        animate={reduceMotion ? { opacity: 0.55 } : { y: [0, 16, 0], opacity: [0.42, 0.62, 0.42] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <img
-          src="https://creativecat.digital/wp-content/uploads/2025/03/Cat.png"
-          alt=""
-          aria-hidden="true"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            objectPosition: 'bottom center',
-            display: 'block',
-          }}
-        />
-      </motion.div>
 
       <motion.div className="container portfolio-modern-hero" style={{ y: heroY }}>
         <motion.div
@@ -301,7 +355,7 @@ export default function Portfolio() {
         </motion.div>
       </motion.div>
 
-      <motion.div className="container" style={{ position: 'relative', zIndex: 1, y: gridY }}>
+      <motion.div className="container" style={{ position: 'relative', zIndex: 2, y: gridY }}>
         <div
           className="portfolio-modern-grid"
           style={{
@@ -324,11 +378,74 @@ export default function Portfolio() {
       </motion.div>
 
       <style>{`
+        .portfolio-parallax-stars {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          pointer-events: none;
+          overflow: hidden;
+        }
+
+        .portfolio-parallax-stars__layer {
+          position: absolute;
+          inset: 0;
+          animation: portfolio-parallax-stars-scroll 50s linear infinite;
+        }
+
+        .portfolio-parallax-stars__layer--2 {
+          animation-duration: 100s;
+        }
+
+        .portfolio-parallax-stars__layer--3 {
+          animation-duration: 150s;
+        }
+
+        .portfolio-parallax-stars__layer--static {
+          animation: none;
+        }
+
+        .portfolio-parallax-stars__pixel {
+          position: absolute;
+          left: 0;
+          top: 0;
+          background: transparent;
+          border-radius: 50%;
+        }
+
+        .portfolio-parallax-stars__pixel--1 {
+          width: 1px;
+          height: 1px;
+        }
+
+        .portfolio-parallax-stars__pixel--2 {
+          width: 2px;
+          height: 2px;
+        }
+
+        .portfolio-parallax-stars__pixel--3 {
+          width: 3px;
+          height: 3px;
+        }
+
+        @keyframes portfolio-parallax-stars-scroll {
+          from { transform: translateY(0); }
+          to { transform: translateY(-${STAR_LOOP_PX}px); }
+        }
+
         .portfolio-modern-hero {
           text-align: center;
           margin-bottom: 52px;
           position: relative;
-          z-index: 1;
+          z-index: 2;
+        }
+
+        #portfolio .section-title,
+        #portfolio .portfolio-modern-heading {
+          color: #f4f6fc;
+        }
+
+        #portfolio .portfolio-modern-subtitle {
+          color: rgba(244, 246, 252, 0.78);
         }
 
         .portfolio-modern-heading {
@@ -370,8 +487,9 @@ export default function Portfolio() {
           position: absolute;
           border-radius: 999px;
           pointer-events: none;
-          z-index: 0;
+          z-index: 1;
           will-change: transform, opacity;
+          opacity: 0.42;
         }
 
         .portfolio-modern-ambient--one {
@@ -390,18 +508,6 @@ export default function Portfolio() {
           bottom: 20px;
           background: radial-gradient(circle, rgba(91,78,158,0.18) 0%, rgba(59,130,246,0.1) 38%, transparent 70%);
           filter: blur(30px);
-        }
-
-        .portfolio-modern-ambient--three {
-          width: 180px;
-          height: 180px;
-          right: 12%;
-          top: 120px;
-          border-radius: 38px;
-          border: 1px solid rgba(91,78,158,0.12);
-          background: linear-gradient(180deg, rgba(255,255,255,0.86) 0%, rgba(255,255,255,0.14) 100%);
-          box-shadow: 0 24px 60px rgba(9, 20, 44, 0.08);
-          backdrop-filter: blur(10px);
         }
 
         .portfolio-modern-card {
@@ -592,12 +698,6 @@ export default function Portfolio() {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
           }
 
-          .portfolio-modern-ambient--three {
-            right: 6%;
-            top: 150px;
-            width: 140px;
-            height: 140px;
-          }
         }
 
         @media (max-width: 640px) {
@@ -631,10 +731,6 @@ export default function Portfolio() {
             width: 320px;
             height: 320px;
             right: -120px;
-          }
-
-          .portfolio-modern-ambient--three {
-            display: none;
           }
         }
       `}</style>

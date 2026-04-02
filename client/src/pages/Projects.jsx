@@ -7,7 +7,7 @@ import ScrollToTop from '../components/layout/ScrollToTop'
 import ImpressiveDesignCTA from '../components/sections/ImpressiveDesignCTA'
 import Achievement from '../components/sections/Achievement'
 import ShowcaseCard from '../components/ui/ShowcaseCard'
-import { projects, secondaryProjects } from '../data/portfolio'
+import { projects, creativeServicesPrimary, creativeServicesSecondary } from '../data/portfolio'
 
 export default function Projects() {
   const navigate = useNavigate()
@@ -78,13 +78,36 @@ export default function Projects() {
               <span className="section-tag">OUR SERVICES</span>
               <h2 className="section-title">More Ways We Support Brands</h2>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '28px' }} className="sec-port-grid">
-              {secondaryProjects.map((project, i) => (
+            <div className="sec-port-grid-row1">
+              {creativeServicesPrimary.map((project, i) => (
                 <motion.div
                   key={project.id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                >
+                  <ShowcaseCard
+                    image={project.image}
+                    title={project.title}
+                    description={project.description}
+                    hoverText={project.description}
+                    badge={project.category}
+                    metaTag={project.category}
+                    primaryColor={project.brandColor}
+                    secondaryColor={project.accentColor}
+                    aspectRatio="5 / 4"
+                    metaVariant="compact"
+                  />
+                </motion.div>
+              ))}
+            </div>
+            <div className="sec-port-grid-row2">
+              {creativeServicesSecondary.map((project, i) => (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: (creativeServicesPrimary.length + i) * 0.08 }}
                 >
                   <ShowcaseCard
                     image={project.image}
@@ -125,11 +148,27 @@ export default function Projects() {
       <ScrollToTop />
 
       <style>{`
+        .sec-port-grid-row1 {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 28px;
+          margin-bottom: 28px;
+        }
+        .sec-port-grid-row2 {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 28px;
+        }
+        @media (max-width: 1100px) {
+          .sec-port-grid-row1 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .sec-port-grid-row2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
         @media (max-width: 768px) {
           .portfolio-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 600px) {
-          .sec-port-grid { grid-template-columns: 1fr !important; }
+          .sec-port-grid-row1,
+          .sec-port-grid-row2 { grid-template-columns: 1fr !important; }
         }
       `}</style>
     </>

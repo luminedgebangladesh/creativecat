@@ -46,10 +46,10 @@ export default function Home() {
         <Hero />
         <SelectedWork />
         <Portfolio />
+        <SecondaryPortfolio />
         <BrandGuidelines />
         <About />
         <FAQ />
-        <SecondaryPortfolio />
         <Contact />
       </main>
 

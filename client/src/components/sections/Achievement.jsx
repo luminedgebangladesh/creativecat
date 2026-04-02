@@ -5,7 +5,7 @@ import AnimatedCounter from '../ui/AnimatedCounter'
 const achievements = [
   { target: 85,  suffix: '+', label: 'Satisfied Clients' },
   { target: 180, suffix: '+', label: 'Brands Joined' },
-  { target: 6,   suffix: '+', label: 'Years Experience' },
+  { target: 8,   suffix: '+', label: 'Years Experience' },
   { target: 50,  suffix: '+', label: 'Marketing Experts' },
 ]
 
