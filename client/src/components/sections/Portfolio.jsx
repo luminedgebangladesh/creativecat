@@ -239,7 +239,6 @@ function PortfolioCard({ project, index, inView, reduceMotion }) {
             />
 
             <div className="portfolio-modern-top">
-              <span className="portfolio-modern-pill">{project.category}</span>
               <motion.span
                 className="portfolio-modern-icon"
                 animate={hovered || reduceMotion
@@ -255,10 +254,6 @@ function PortfolioCard({ project, index, inView, reduceMotion }) {
           <div className="portfolio-modern-body">
             <h3 className="portfolio-modern-title">{project.title}</h3>
             <p className="portfolio-modern-copy">{project.description}</p>
-            <div className="portfolio-modern-footer">
-              <span className="portfolio-modern-label">{project.category}</span>
-              <span className="portfolio-modern-line" />
-            </div>
           </div>
         </div>
       </Link>

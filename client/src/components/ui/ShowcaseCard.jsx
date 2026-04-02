@@ -8,6 +8,8 @@ export default function ShowcaseCard({
   description,
   hoverText,
   badge,
+  showBadge = false,
+  showMetaTag = false,
   metaTag,
   to,
   ctaLabel = 'View Project',
@@ -84,14 +86,14 @@ export default function ShowcaseCard({
             }}
           />
 
-          {badge && (
+          {showBadge && badge && (
             <div className="showcase-card__topbar">
               <span className="showcase-card__badge">{badge}</span>
             </div>
           )}
 
           <div className="showcase-card__hover-panel">
-            {metaTag && <span className="showcase-card__eyebrow">{metaTag}</span>}
+            {showMetaTag && metaTag && <span className="showcase-card__eyebrow">{metaTag}</span>}
             <h3 className="showcase-card__hover-title">{title}</h3>
             {hoverCopy && <p className="showcase-card__hover-copy">{hoverCopy}</p>}
             {to && (
@@ -107,7 +109,7 @@ export default function ShowcaseCard({
       <div className="showcase-card__meta">
         <div className="showcase-card__meta-row">
           <h3 className="showcase-card__meta-title">{title}</h3>
-          {metaTag && <span className="showcase-card__meta-tag">{metaTag}</span>}
+          {showMetaTag && metaTag && <span className="showcase-card__meta-tag">{metaTag}</span>}
         </div>
         {description && <p className="showcase-card__meta-copy">{description}</p>}
       </div>
