@@ -24,7 +24,7 @@ export default function BrandGuidelines() {
           >
             <span className="section-tag">BRAND GUIDELINES</span>
             <h2 className="section-title" style={{ maxWidth: '20ch' }}>
-              Make your brand consistent across every platform.
+            Make Your Brand Consistent Across Every Platform.
             </h2>
             <p className="section-subtitle" style={{ maxWidth: '62ch' }}>
               Brand guidelines are the foundation of a premium portfolio and high-performing marketing.

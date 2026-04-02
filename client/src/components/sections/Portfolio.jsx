@@ -334,7 +334,7 @@ export default function Portfolio() {
           animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
           transition={{ duration: 0.8, delay: 0.22, ease: revealEase }}
         >
-          A showcase of brands we've helped build, grow, and transform through creative digital marketing.
+          A showcase of growth-driven brands we've launched, scaled, and elevated through modern digital marketing systems.
         </motion.p>
 
         <motion.div

@@ -32,7 +32,7 @@ export default function Projects() {
             <span className="section-tag">OUR WORK</span>
             <h1 className="section-title">Projects We Have Done</h1>
             <p className="section-subtitle" style={{ margin: '0 auto' }}>
-              A showcase of brands we've helped build, grow, and transform through creative digital marketing.
+              A showcase of growth-driven brands we've launched, scaled, and elevated through modern digital marketing systems.
             </p>
           </div>
         </section>

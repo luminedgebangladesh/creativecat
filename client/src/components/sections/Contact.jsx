@@ -31,6 +31,7 @@ export default function Contact() {
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 })
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm()
+  const errorTextStyle = { color: '#fca5a5', fontSize: '12px', marginTop: '-8px' }
 
   const onSubmit = async (data) => {
     setSubmitting(true)
@@ -61,6 +62,10 @@ export default function Contact() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const onInvalid = () => {
+    toast.error('Please complete all required fields correctly before submitting.')
   }
 
   const inputStyle = {
@@ -193,7 +198,7 @@ export default function Contact() {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <form
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleSubmit(onSubmit, onInvalid)}
               style={{
                 background: '#0d1021',
                 borderRadius: '16px',
@@ -208,6 +213,7 @@ export default function Contact() {
                 onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
                 onBlur={e => (e.target.style.borderColor = errors.name ? '#ef4444' : 'rgba(255,255,255,0.12)')}
               />
+              {errors.name && <p style={errorTextStyle}>Name is required.</p>}
 
               <input
                 style={{ ...inputStyle, borderColor: errors.email ? '#ef4444' : 'rgba(255,255,255,0.12)' }}
@@ -217,6 +223,7 @@ export default function Contact() {
                 onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
                 onBlur={e => (e.target.style.borderColor = errors.email ? '#ef4444' : 'rgba(255,255,255,0.12)')}
               />
+              {errors.email && <p style={errorTextStyle}>Enter a valid email address.</p>}
 
               <input
                 style={inputStyle}
@@ -225,6 +232,7 @@ export default function Contact() {
                 onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
                 onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
               />
+              {errors.subject && <p style={errorTextStyle}>Subject is required.</p>}
 
               <textarea
                 style={{ ...inputStyle, resize: 'vertical', minHeight: '140px', borderColor: errors.message ? '#ef4444' : 'rgba(255,255,255,0.12)' }}
@@ -233,6 +241,7 @@ export default function Contact() {
                 onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
                 onBlur={e => (e.target.style.borderColor = errors.message ? '#ef4444' : 'rgba(255,255,255,0.12)')}
               />
+              {errors.message && <p style={errorTextStyle}>Message must be at least 10 characters.</p>}
 
               <button
                 type="submit"
