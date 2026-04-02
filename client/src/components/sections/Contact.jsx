@@ -13,17 +13,6 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim()
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim()
 const hasEmailJsConfig = Boolean(EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY)
 
-function buildMailtoHref({ name, email, subject, message }) {
-  const subjectLine = subject?.trim() || 'Project inquiry'
-  const body = [
-    `Name: ${name}`,
-    `Email: ${email}`,
-    '',
-    message?.trim() || '',
-  ].join('\n')
-
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(body)}`
-}
 // ─────────────────────────────────────────────────────────────
 
 const socialLinks = [
@@ -47,8 +36,10 @@ export default function Contact() {
     setSubmitting(true)
     try {
       if (!hasEmailJsConfig) {
-        window.location.href = buildMailtoHref(data)
-        toast('Opening your email app with this message.')
+        toast.error(
+          'Email sending is not configured. Please set `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` in `client/.env`. ' +
+          `Detected: service=${EMAILJS_SERVICE_ID ? 'set' : 'missing'}, template=${EMAILJS_TEMPLATE_ID ? 'set' : 'missing'}, publicKey=${EMAILJS_PUBLIC_KEY ? 'set' : 'missing'}.`
+        )
         return
       }
 
@@ -61,8 +52,10 @@ export default function Contact() {
       }, EMAILJS_PUBLIC_KEY)
       toast.success("Message sent! We'll get back to you within 24 hours.")
       reset()
-    } catch {
-      toast.error(`Failed to send. Please email us directly at ${CONTACT_EMAIL}`)
+    } catch (err) {
+      console.error('EmailJS send failed:', err)
+      const msg = err?.text || err?.message || String(err)
+      toast.error(`Failed to send. ${msg}. Please email us directly at ${CONTACT_EMAIL}`)
     } finally {
       setSubmitting(false)
     }
@@ -264,7 +257,7 @@ export default function Contact() {
               </button>
 
               <p style={{ color: 'rgba(255,255,255,0.68)', fontSize: '12px', lineHeight: '1.6' }}>
-                If direct sending is unavailable, submit will open your email app with the message prefilled.
+                Submitting sends your message directly to Creative Cat. If delivery fails, you will see an error message.
               </p>
             </form>
           </motion.div>

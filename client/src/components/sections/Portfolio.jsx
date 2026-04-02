@@ -512,9 +512,11 @@ export default function Portfolio() {
 
         .portfolio-modern-card {
           position: relative;
+          display: flex;
+          flex-direction: column;
           height: 100%;
           border-radius: 30px;
-          padding: 14px;
+          padding: 0; /* flush media against the card border */
           overflow: hidden;
           transform-style: preserve-3d;
           background:
@@ -523,22 +525,25 @@ export default function Portfolio() {
           box-shadow: 0 18px 42px rgba(9, 20, 44, 0.08);
           transition:
             transform 0.42s cubic-bezier(0.22, 0.61, 0.36, 1),
-            box-shadow 0.42s cubic-bezier(0.22, 0.61, 0.36, 1),
-            border-color 0.28s ease;
+            box-shadow 0.42s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
 
         .portfolio-modern-link:hover .portfolio-modern-card {
           transform: translateY(-4px);
-          border-color: rgba(10, 16, 30, 0.14);
-          box-shadow: 0 28px 62px rgba(9, 20, 44, 0.14);
+          /* 3px-thick lighting glow driven by each project's brand colors. */
+          box-shadow:
+            0 0 18px 3px var(--project-primary-soft),
+            0 0 46px 0 var(--project-secondary-soft),
+            0 28px 62px rgba(9, 20, 44, 0.14);
         }
 
         .portfolio-modern-media {
           position: relative;
           overflow: hidden;
           aspect-ratio: 5 / 4;
-          border-radius: 24px;
+          border-radius: 30px 30px 0 0;
           transform: translateZ(24px);
+          flex: 0 0 auto;
         }
 
         .portfolio-modern-image {
@@ -640,7 +645,10 @@ export default function Portfolio() {
 
         .portfolio-modern-body {
           position: relative;
-          padding: 18px 8px 8px;
+          display: flex;
+          flex-direction: column;
+          /* Previously the card had padding; keep the same text inset. */
+          padding: 18px 22px 8px;
           z-index: 1;
           transform: translateZ(28px);
         }
@@ -670,6 +678,7 @@ export default function Portfolio() {
           display: flex;
           align-items: center;
           gap: 14px;
+          margin-top: auto; /* Keep footer pinned to the bottom of the card. */
         }
 
         .portfolio-modern-label {

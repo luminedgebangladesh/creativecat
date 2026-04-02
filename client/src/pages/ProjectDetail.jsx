@@ -280,6 +280,17 @@ export default function ProjectDetail() {
     : project.brandColor
   const heroImage = project.heroImage || project.image
   const heroBackgroundPosition = project.heroImagePosition || project.cardPosition || 'center'
+  // Many projects include the same "cover" image as both the hero and the first gallery item.
+  // For the individual project page design, exclude those cover visuals from the gallery grid.
+  const coverSources = new Set([project.heroImage, project.image].filter(Boolean))
+  // RIC has two gallery tiles that should be removed from the individual project page gallery.
+  const extraExcludedGallerySources =
+    project.slug === 'royal-international-college'
+      ? new Set(['/projects/ric/ric-02.png', '/projects/ric/ric-15.png'])
+      : new Set()
+
+  const galleryImagesRaw = (project.images || []).filter((src) => !coverSources.has(src) && !extraExcludedGallerySources.has(src))
+  const galleryImages = galleryImagesRaw.length > 0 ? galleryImagesRaw : (project.images || [])
   const galleryAspectRatio = project.galleryAspectRatio || '4 / 5'
   const galleryPadding = project.galleryPadding || '16px'
   const galleryBackground = project.galleryBackground || `linear-gradient(180deg, #ffffff 0%, ${project.brandColor}10 100%)`
@@ -514,7 +525,7 @@ export default function ProjectDetail() {
             </motion.div>
 
             <div className="gallery-grid">
-              {project.images.map((src, i) => (
+              {galleryImages.map((src, i) => (
                 <motion.button
                   key={i}
                   type="button"

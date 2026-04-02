@@ -86,9 +86,19 @@ export default function SecondaryPortfolio() {
           grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 28px;
         }
+
+        /* Make the top row (4-up) card images match the height of the bottom row (3-up). */
+        .sec-port-grid-row1 .showcase-card__media {
+          /* Row1 cards are narrower (4 columns), so use a taller aspect ratio. */
+          aspect-ratio: 11 / 12 !important;
+        }
         @media (max-width: 1100px) {
           .sec-port-grid-row1 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .sec-port-grid-row2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .sec-port-grid-row1 .showcase-card__media {
+            /* When both rows are 2 columns, revert so both rows match again. */
+            aspect-ratio: 5 / 4 !important;
+          }
         }
         @media (max-width: 768px) {
           .sec-port-header { grid-template-columns: 1fr !important; text-align: left !important; gap: 20px !important; }
