@@ -20,6 +20,7 @@ export default function Projects() {
     <>
       <Helmet>
         <title>Our Projects - Creative Cat Digital Marketing Agency</title>
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
         <meta name="description" content="Explore Creative Cat's portfolio of branding, design, video editing, SEO, and digital marketing projects." />
       </Helmet>
 

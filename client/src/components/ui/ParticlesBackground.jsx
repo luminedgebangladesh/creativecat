@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-const COUNT      = 18     // fewer, cleaner
-const LINK_DIST  = 140
-const MOUSE_DIST = 265
-const MAX_SPEED  = 0.28
+const COUNT_DESKTOP = 18
+const COUNT_MOBILE  = 8
+const LINK_DIST     = 140
+const MOUSE_DIST    = 265
+const MAX_SPEED     = 0.28
 
 // Deep brand orange for mouse lines
 const MOUSE_COLOR = '220,65,0'
@@ -15,8 +16,10 @@ export default function ParticlesBackground() {
   const mouse     = useRef({ x: -9999, y: -9999 })
 
   useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
+    const canvas  = canvasRef.current
+    const ctx     = canvas.getContext('2d')
+    const mobile  = window.innerWidth < 768
+    const COUNT   = mobile ? COUNT_MOBILE : COUNT_DESKTOP
     let rafId
     let w = 0, h = 0
     let particles = []
@@ -35,7 +38,7 @@ export default function ParticlesBackground() {
           y:   Math.random() * h,
           vx:  Math.cos(ang) * spd,
           vy:  Math.sin(ang) * spd,
-          r:   2.2 + Math.random() * 2.0,   // bigger dots
+          r:   2.2 + Math.random() * 2.0,
           hue: COLORS[Math.floor(Math.random() * COLORS.length)],
         }
       })
@@ -44,12 +47,23 @@ export default function ParticlesBackground() {
     resize(); spawn()
 
     const onResize = () => { resize(); spawn() }
-    const onMove   = e  => { mouse.current = { x: e.clientX, y: e.clientY } }
-    const onLeave  = () => { mouse.current = { x: -9999, y: -9999 } }
 
-    window.addEventListener('resize',     onResize)
-    window.addEventListener('mousemove',  onMove)
-    document.addEventListener('mouseleave', onLeave)
+    // Throttled mouse move — cap at ~60 fps equivalent
+    let lastMove = 0
+    const onMove = e => {
+      const now = Date.now()
+      if (now - lastMove < 16) return
+      lastMove = now
+      mouse.current = { x: e.clientX, y: e.clientY }
+    }
+    const onLeave = () => { mouse.current = { x: -9999, y: -9999 } }
+
+    window.addEventListener('resize',      onResize)
+    // Only attach mouse listeners on non-touch (desktop) devices
+    if (!mobile) {
+      window.addEventListener('mousemove',   onMove)
+      document.addEventListener('mouseleave', onLeave)
+    }
 
     function tick() {
       ctx.clearRect(0, 0, w, h)
@@ -57,10 +71,10 @@ export default function ParticlesBackground() {
       // ── Move & wrap ──────────────────────────────────────────
       for (const p of particles) {
         p.x += p.vx;  p.y += p.vy
-        if (p.x < -10)    p.x = w + 10
-        else if (p.x > w + 10) p.x = -10
-        if (p.y < -10)    p.y = h + 10
-        else if (p.y > h + 10) p.y = -10
+        if (p.x < -10)       p.x = w + 10
+        else if (p.x > w+10) p.x = -10
+        if (p.y < -10)       p.y = h + 10
+        else if (p.y > h+10) p.y = -10
       }
 
       // ── Particle → Particle lines ────────────────────────────
@@ -80,18 +94,20 @@ export default function ParticlesBackground() {
         }
       }
 
-      // ── Mouse → Particle lines — deep orange ─────────────────
-      const { x: mx, y: my } = mouse.current
-      for (const p of particles) {
-        const dx = p.x - mx, dy = p.y - my
-        const d  = Math.sqrt(dx * dx + dy * dy)
+      // ── Mouse → Particle lines — desktop only ────────────────
+      if (!mobile) {
+        const { x: mx, y: my } = mouse.current
+        for (const p of particles) {
+          const dx = p.x - mx, dy = p.y - my
+          const d  = Math.sqrt(dx * dx + dy * dy)
           if (d < MOUSE_DIST) {
-          const alpha = Math.pow(1 - d / MOUSE_DIST, 1.2) * 0.96
-          ctx.beginPath()
-          ctx.strokeStyle = `rgba(${MOUSE_COLOR},${alpha})`
-          ctx.lineWidth   = 2.2
-          ctx.moveTo(p.x, p.y); ctx.lineTo(mx, my)
-          ctx.stroke()
+            const alpha = Math.pow(1 - d / MOUSE_DIST, 1.2) * 0.96
+            ctx.beginPath()
+            ctx.strokeStyle = `rgba(${MOUSE_COLOR},${alpha})`
+            ctx.lineWidth   = 2.2
+            ctx.moveTo(p.x, p.y); ctx.lineTo(mx, my)
+            ctx.stroke()
+          }
         }
       }
 
@@ -119,9 +135,11 @@ export default function ParticlesBackground() {
 
     return () => {
       cancelAnimationFrame(rafId)
-      window.removeEventListener('resize',     onResize)
-      window.removeEventListener('mousemove',  onMove)
-      document.removeEventListener('mouseleave', onLeave)
+      window.removeEventListener('resize',      onResize)
+      if (!mobile) {
+        window.removeEventListener('mousemove',   onMove)
+        document.removeEventListener('mouseleave', onLeave)
+      }
     }
   }, [])
 
@@ -133,7 +151,7 @@ export default function ParticlesBackground() {
         inset:         0,
         width:         '100%',
         height:        '100%',
-        zIndex:        1,          // behind content, above ambient gradients
+        zIndex:        1,
         pointerEvents: 'none',
       }}
     />

@@ -31,6 +31,7 @@ export default function Home() {
     <>
       <Helmet>
         <title>Creative Cat — Digital Marketing Agency | Khulna, Bangladesh</title>
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
         <meta
           name="description"
           content="Creative Cat is a top-notch digital marketing agency in Khulna, Bangladesh. We offer SEO, Paid Ads, Graphic Design, Video Editing, Branding, and Social Media services."

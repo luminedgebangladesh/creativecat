@@ -287,6 +287,7 @@ export default function ProjectDetail() {
     <>
       <Helmet>
         <title>{project.title} - Creative Cat</title>
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
         <meta name="description" content={project.overview} />
         <meta property="og:title" content={`${project.title} - Creative Cat`} />
         <meta property="og:description" content={project.tagline} />
