@@ -44,11 +44,13 @@ export default function Contact() {
       }
 
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        from_name:    data.name,
-        from_email:   data.email,
-        subject:      data.subject,
-        message:      data.message,
-        to_email:     CONTACT_EMAIL,
+        from_name: data.name,
+        from_email: data.email,
+        // Keep replies going to your business inbox (not the visitor).
+        reply_to: CONTACT_EMAIL,
+        subject: data.subject,
+        message: data.message,
+        to_email: CONTACT_EMAIL,
       }, EMAILJS_PUBLIC_KEY)
       toast.success("Message sent! We'll get back to you within 24 hours.")
       reset()
