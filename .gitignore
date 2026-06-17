@@ -5,3 +5,7 @@ client/.env
 client/.env.local
 .DS_Store
 *.log
+*.mp4
+*.mov
+*.avi
+*.webm

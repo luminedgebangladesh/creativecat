@@ -267,6 +267,7 @@ export default function ProjectDetail() {
   const { slug } = useParams()
   const project = projects.find(p => p.slug === slug)
   const [lightbox, setLightbox] = useState(null)
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0)
 
   if (!project) return <Navigate to="/projects" replace />
 
@@ -294,6 +295,24 @@ export default function ProjectDetail() {
   const galleryAspectRatio = project.galleryAspectRatio || '4 / 5'
   const galleryPadding = project.galleryPadding || '16px'
   const galleryBackground = project.galleryBackground || `linear-gradient(180deg, #ffffff 0%, ${project.brandColor}10 100%)`
+
+  const supportedVideoExtensions = ['.mp4', '.webm', '.mov']
+  const defaultVideos = [
+    { file: 'BlueberryFloat.mp4', title: 'Blueberry Float Motion' },
+    { file: 'cafe promo.mp4', title: 'Cafe Promo Film' },
+    { file: 'Hawaiian Martini .mp4', title: 'Hawaiian Martini Scene' },
+  ].filter((item) => supportedVideoExtensions.some((ext) => item.file.toLowerCase().endsWith(ext)))
+    .map((item) => ({
+      src: `/projects/video/${encodeURI(item.file)}`,
+      title: item.title,
+      description: `Project reel clip from ${item.title}.`,
+    }))
+  const validProjectVideos = (project.videos || []).filter((video) =>
+    supportedVideoExtensions.some((ext) => video.src.toLowerCase().endsWith(ext))
+  )
+  const projectVideos = validProjectVideos.length > 0 ? validProjectVideos : defaultVideos
+  const activeVideo = projectVideos[activeVideoIndex] || projectVideos[0]
+
   return (
     <>
       <Helmet>
@@ -562,6 +581,85 @@ export default function ProjectDetail() {
           </div>
         </section>
 
+        {/* ── Project Video ───────────────────────────────── */}
+        <section style={{ background: '#fff', padding: '80px 0' }}>
+          <div className="container">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', gap: '24px', alignItems: 'flex-end', flexWrap: 'wrap' }}
+            >
+              <div>
+                <span className="section-tag">Video</span>
+                <h2 className="section-title" style={{ marginBottom: '10px' }}>Project Video</h2>
+                <p className="section-subtitle" style={{ maxWidth: '62ch' }}>
+                  Watch selected video assets that showcase the concept, motion, and creative direction for this project.
+                </p>
+              </div>
+            </motion.div>
+
+            <div className="video-selection-panel">
+              <div className="video-player-card">
+                <div className="video-card-media video-player-media">
+                  <video
+                    key={activeVideo.src}
+                    src={activeVideo.src}
+                    poster={activeVideo.poster || ''}
+                    controls
+                    muted
+                    playsInline
+                    preload="metadata"
+                    autoPlay
+                    loop
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+                <div className="video-card-body video-player-body">
+                  <span className="video-card-label">Featured Video</span>
+                  <h3 className="video-card-title">{activeVideo.title || 'Project Video'}</h3>
+                  <div className="video-player-chip">Featured Reel</div>
+                  <p className="video-card-text">
+                    {activeVideo.description || 'A polished demo clip showing the motion and visual direction behind the project.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="video-options-grid">
+                {projectVideos.map((video, index) => (
+                  <motion.button
+                    key={index}
+                    type="button"
+                    className={`video-option ${index === activeVideoIndex ? 'video-option--active' : ''}`}
+                    onClick={() => setActiveVideoIndex(index)}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                  >
+                      <div className="video-option-thumb">
+                      <video
+                        src={video.src}
+                        poster={video.poster || ''}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        tabIndex={-1}
+                      />
+                    </div>
+                    <div className="video-option-content">
+                      <h4 className="video-option-title">{video.title || `Video ${index + 1}`}</h4>
+                      <p className="video-option-text">Tap to play this clip</p>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── Prev / Next ───────────────────────────────────── */}
         <section style={{ background: '#fff', padding: '64px 0', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
           <div className="container nav-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
@@ -613,8 +711,243 @@ export default function ProjectDetail() {
             grid-template-columns: 1fr !important;
           }
         }
+        .video-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 28px;
+          grid-auto-rows: 1fr;
+          align-items: stretch;
+        }
+        .video-card-wrapper {
+          display: flex;
+        }
+        .video-card {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          border: 1px solid var(--border-subtle);
+          border-radius: var(--radius-xl);
+          background: #fff;
+          box-shadow: var(--shadow-card);
+          transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+          flex: 1;
+        }
+        .video-card:hover {
+          transform: translateY(-6px);
+          box-shadow: var(--shadow-hover);
+          border-color: var(--border-accent);
+        }
+        .video-card-media {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          min-height: 360px;
+          background: #000;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+        .video-card-media video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          background: #000;
+        }
+        .video-card-body {
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          flex: 1;
+          justify-content: space-between;
+        }
+        .video-card-label {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 7px 14px;
+          border-radius: 999px;
+          background: var(--accent-soft);
+          color: var(--accent);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+        .video-card-title {
+          margin: 0;
+          font-size: 20px;
+          font-weight: 800;
+          line-height: 1.25;
+          color: var(--text-primary);
+        }
+        .video-card-text {
+          margin: 0;
+          color: var(--text-secondary);
+          font-size: 15px;
+          line-height: 1.8;
+        }
+        .video-selection-panel {
+          display: grid;
+          grid-template-columns: minmax(0, 1.55fr) 1fr;
+          gap: 28px;
+          align-items: start;
+        }
+        .video-player-card {
+          display: flex;
+          flex-direction: column;
+          gap: 18px;
+          border: 1px solid rgba(0,0,0,0.08);
+          border-radius: var(--radius-2xl);
+          background: #fff;
+          box-shadow: 0 30px 80px rgba(15, 18, 32, 0.12);
+          overflow: hidden;
+        }
+        .video-player-media {
+          aspect-ratio: 16 / 9;
+          min-height: 420px;
+          background: #000;
+          position: relative;
+          overflow: hidden;
+        }
+        .video-player-media::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(0,0,0,0.18), transparent 30%);
+          pointer-events: none;
+          z-index: 1;
+        }
+        .video-player-media video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          position: relative;
+          z-index: 0;
+        }
+        .video-player-body {
+          padding: 28px 32px 32px;
+          display: grid;
+          gap: 16px;
+        }
+        .video-options-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 18px;
+          grid-auto-rows: minmax(120px, auto);
+        }
+        .video-option {
+          width: 100%;
+          display: grid;
+          grid-template-columns: 140px 1fr;
+          gap: 18px;
+          align-items: center;
+          text-align: left;
+          border: 1px solid rgba(0,0,0,0.08);
+          border-radius: var(--radius-xl);
+          background: rgba(255,255,255,0.96);
+          padding: 16px;
+          transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+          cursor: pointer;
+          position: relative;
+          min-height: 110px;
+        }
+        .video-option:hover,
+        .video-option--active {
+          transform: translateY(-2px);
+          border-color: var(--accent);
+          box-shadow: 0 20px 45px rgba(91, 78, 158, 0.12);
+          background: rgba(255, 105, 0, 0.08);
+        }
+        .video-option--active::after {
+          content: 'Selected';
+          position: absolute;
+          top: 14px;
+          right: 16px;
+          padding: 5px 12px;
+          border-radius: 999px;
+          background: rgba(255, 105, 0, 0.16);
+          color: var(--accent);
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+        .video-option-thumb {
+          width: 140px;
+          aspect-ratio: 16 / 9;
+          min-height: 84px;
+          overflow: hidden;
+          border-radius: var(--radius-lg);
+          background: #000;
+          box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+          flex-shrink: 0;
+        }
+        .video-option-thumb video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+          filter: saturate(0.98) contrast(0.95);
+        }
+        .video-option-content {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          min-height: 84px;
+        }
+        .video-option-title {
+          margin: 0 0 6px;
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+        .video-option-text {
+          margin: 0;
+          color: var(--text-muted);
+          font-size: 14px;
+          line-height: 1.6;
+        }
+        .video-option-thumb video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        .video-option-title {
+          margin: 0 0 6px;
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+        .video-option-text {
+          margin: 0;
+          color: var(--text-muted);
+          font-size: 14px;
+          line-height: 1.7;
+        }
+        .video-player-chip {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px 14px;
+          border-radius: 999px;
+          background: rgba(255, 105, 0, 0.12);
+          color: var(--accent);
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          margin: 0 0 14px;
+          width: fit-content;
+        }
         @media (max-width: 900px) {
           .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+          .video-grid { grid-template-columns: 1fr !important; }
+          .video-selection-panel { grid-template-columns: 1fr !important; }
+          .video-option { grid-template-columns: 110px 1fr; }
         }
         @media (max-width: 768px) {
           .nav-grid {

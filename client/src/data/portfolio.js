@@ -114,6 +114,11 @@ const projectsSource = [
       '/projects/dipakkhik/dipakkhik-18.png',
       '/projects/dipakkhik/dipakkhik-19.png',
     ],
+    videos: [
+      { src: '/projects/dipakkhik/video/Dipakkik.mp4', title: 'Dipakkhik' },
+      { src: '/projects/dipakkhik/video/intro 1.mov', title: 'Intro 1' },
+      { src: '/projects/dipakkhik/video/Outro 1.mov', title: 'Outro 1' }
+    ],
   },
   {
     id: 14,
@@ -168,6 +173,12 @@ const projectsSource = [
       '/projects/luminedge/luminedge-08.png',
       '/projects/luminedge/luminedge-09.png',
       '/projects/luminedge/luminedge-10.png',
+    ],
+    videos: [
+      { src: '/projects/luminedge/video/basic english.mp4', title: 'Basic English' },
+      { src: '/projects/luminedge/video/DARE to WIN.mp4', title: 'Dare to Win' },
+      { src: '/projects/luminedge/video/free IELTS mock test.mp4', title: 'Free IELTS Mock Test' },
+      { src: '/projects/luminedge/video/IELTS preparation.mp4', title: 'IELTS Preparation' }
     ],
   },
   {
@@ -227,6 +238,12 @@ const projectsSource = [
       '/projects/ric/ric-14.png',
       '/projects/ric/ric-15.png',
     ],
+    videos: [
+      { src: '/projects/ric/video/business management.mp4', title: 'Business Management' },
+      { src: '/projects/ric/video/Constraction Career.mp4', title: 'Construction Career' },
+      { src: '/projects/ric/video/PAINTING & DECORATION.mp4', title: 'Painting & Decoration' },
+      { src: '/projects/ric/video/Plastering.mp4', title: 'Plastering' }
+    ],
   },
   {
     id: 12,
@@ -278,6 +295,12 @@ const projectsSource = [
       '/projects/aist/photo_2026-04-01_15-06-12.jpg',
       '/projects/aist/photo_2026-04-01_15-06-20.jpg',
       '/projects/aist/photo_2026-04-01_15-06-29.jpg',
+    ],
+    videos: [
+      { src: '/projects/aist/video/advance diploma leadership.mp4', title: 'Advance Diploma Leadership' },
+      { src: '/projects/aist/video/Diploma of Information Technology.mp4', title: 'Diploma of Information Technology' },
+      { src: '/projects/aist/video/Diploma of Project Management.mp4', title: 'Diploma of Project Management' },
+      { src: '/projects/aist/video/Hospitality Management.mp4', title: 'Hospitality Management' }
     ],
   },
   {
@@ -332,6 +355,12 @@ const projectsSource = [
       '/projects/ftz-smart-security/photo_2026-04-01_14-20-26.jpg',
       '/projects/ftz-smart-security/photo_2026-04-01_14-20-31.jpg',
       '/projects/ftz-smart-security/photo_2026-04-01_14-20-35.jpg',
+    ],
+    videos: [
+      { src: '/projects/ftz-smart-security/video/01 1x1.mp4', title: '1x1 Video Showcase' },
+      { src: '/projects/ftz-smart-security/video/cctv .mp4', title: 'CCTV Style Clip' },
+      { src: '/projects/ftz-smart-security/video/full home final.mp4', title: 'Full Home Final' },
+      { src: '/projects/ftz-smart-security/video/Smart Living, Made Simple.mp4', title: 'Smart Living, Made Simple' }
     ],
   },
   {
