@@ -297,20 +297,12 @@ export default function ProjectDetail() {
   const galleryBackground = project.galleryBackground || `linear-gradient(180deg, #ffffff 0%, ${project.brandColor}10 100%)`
 
   const supportedVideoExtensions = ['.mp4', '.webm', '.mov']
-  const defaultVideos = [
-    { file: 'BlueberryFloat.mp4', title: 'Blueberry Float Motion' },
-    { file: 'cafe promo.mp4', title: 'Cafe Promo Film' },
-    { file: 'Hawaiian Martini .mp4', title: 'Hawaiian Martini Scene' },
-  ].filter((item) => supportedVideoExtensions.some((ext) => item.file.toLowerCase().endsWith(ext)))
-    .map((item) => ({
-      src: `/projects/video/${encodeURI(item.file)}`,
-      title: item.title,
-      description: `Project reel clip from ${item.title}.`,
+  const projectVideos = (project.videos || [])
+    .filter((video) => supportedVideoExtensions.some((ext) => video.src.toLowerCase().endsWith(ext)))
+    .map((video) => ({
+      ...video,
+      src: encodeURI(video.src)
     }))
-  const validProjectVideos = (project.videos || []).filter((video) =>
-    supportedVideoExtensions.some((ext) => video.src.toLowerCase().endsWith(ext))
-  )
-  const projectVideos = validProjectVideos.length > 0 ? validProjectVideos : defaultVideos
   const activeVideo = projectVideos[activeVideoIndex] || projectVideos[0]
 
   return (
@@ -435,7 +427,7 @@ export default function ProjectDetail() {
         </section>
 
         {/* ── Overview ─────────────────────────────────────── */}
-        <section style={{ background: '#fff', padding: '84px 0' }}>
+        <section style={{ background: project.aboutBg || project.aboutBackground || '#fff', padding: project.website ? '84px 0 32px 0' : '84px 0' }}>
           <div className="container detail-summary-grid" style={{ display: 'grid', gridTemplateColumns: '1.05fr 0.95fr', gap: '54px', alignItems: 'start' }}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -450,6 +442,41 @@ export default function ProjectDetail() {
               <p style={{ color: 'var(--text-secondary)', fontSize: '16px', lineHeight: '1.9', marginBottom: '22px' }}>
                 {project.overview}
               </p>
+
+              {project.website && (
+                <div style={{ marginBottom: '32px' }}>
+                  <motion.a
+                    href={project.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '12px 28px',
+                      borderRadius: '100px',
+                      background: project.brandColor,
+                      color: '#fff',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      textDecoration: 'none',
+                      boxShadow: `0 10px 20px ${project.brandColor}24`,
+                      border: `1px solid ${project.brandColor}`,
+                      transition: 'box-shadow 0.2s ease, filter 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.filter = 'brightness(1.1)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.filter = 'none'
+                    }}
+                  >
+                    Visit Live Website <ArrowRight size={14} />
+                  </motion.a>
+                </div>
+              )}
 
               {project.projectType && (
                 <div
@@ -524,6 +551,93 @@ export default function ProjectDetail() {
           </div>
         </section>
 
+        {/* ── Live Website ───────────────────────────────── */}
+        {project.website && (
+          <section style={{ background: '#fff', padding: '0 0 40px 0' }}>
+            <div className="container">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className="live-website-card"
+                style={{
+                  border: `1px solid ${project.brandColor}18`,
+                }}
+              >
+                {project.websiteImage && (
+                  <div
+                    className="live-website-bg"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      backgroundImage: `url(${project.websiteImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'top center',
+                      zIndex: 0,
+                      transition: 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)',
+                    }}
+                  />
+                )}
+
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: project.websiteImage
+                      ? `linear-gradient(135deg, ${project.brandColor}99 0%, rgba(15, 23, 42, 0.55) 50%, rgba(15, 23, 42, 0.68) 100%)`
+                      : `linear-gradient(135deg, ${project.brandColor}0a 0%, ${project.brandColor}14 100%)`,
+                    zIndex: 1,
+                  }}
+                />
+
+                <div style={{ position: 'relative', zIndex: 2 }}>
+                  <h2 style={{ fontSize: '32px', fontWeight: '800', color: project.websiteImage ? '#fff' : 'var(--text-primary)', marginBottom: '14px', letterSpacing: '-0.5px' }}>
+                    Live Website
+                  </h2>
+                  <p style={{ fontSize: '16px', color: project.websiteImage ? 'rgba(255, 255, 255, 0.85)' : 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
+                    Experience the project in action. Visit the live website to see the final deployed result.
+                  </p>
+                </div>
+                
+                <a
+                  href={project.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    position: 'relative',
+                    zIndex: 2,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '14px 36px',
+                    borderRadius: '100px',
+                    background: project.websiteImage ? '#fff' : project.brandColor,
+                    color: project.websiteImage ? 'var(--text-primary)' : '#fff',
+                    fontSize: '15px',
+                    fontWeight: '700',
+                    textDecoration: 'none',
+                    boxShadow: project.websiteImage ? '0 12px 24px rgba(0,0,0,0.25)' : `0 12px 24px ${project.brandColor}40`,
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = project.websiteImage ? '0 16px 32px rgba(0,0,0,0.35)' : `0 16px 32px ${project.brandColor}50`
+                    if (project.websiteImage) e.currentTarget.style.backgroundColor = '#f1f5f9'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'none'
+                    e.currentTarget.style.boxShadow = project.websiteImage ? '0 12px 24px rgba(0,0,0,0.25)' : `0 12px 24px ${project.brandColor}40`
+                    if (project.websiteImage) e.currentTarget.style.backgroundColor = '#fff'
+                  }}
+                >
+                  Visit Website <ArrowRight size={16} />
+                </a>
+              </motion.div>
+            </div>
+          </section>
+        )}
+
         {/* ── Gallery ──────────────────────────────────────── */}
         <section style={{ background: '#f8f9fc', padding: '80px 0' }}>
           <div className="container">
@@ -582,83 +696,85 @@ export default function ProjectDetail() {
         </section>
 
         {/* ── Project Video ───────────────────────────────── */}
-        <section style={{ background: '#fff', padding: '80px 0' }}>
-          <div className="container">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', gap: '24px', alignItems: 'flex-end', flexWrap: 'wrap' }}
-            >
-              <div>
-                <span className="section-tag">Video</span>
-                <h2 className="section-title" style={{ marginBottom: '10px' }}>Project Video</h2>
-                <p className="section-subtitle" style={{ maxWidth: '62ch' }}>
-                  Watch selected video assets that showcase the concept, motion, and creative direction for this project.
-                </p>
-              </div>
-            </motion.div>
-
-            <div className="video-selection-panel">
-              <div className="video-player-card">
-                <div className="video-card-media video-player-media">
-                  <video
-                    key={activeVideo.src}
-                    src={activeVideo.src}
-                    poster={activeVideo.poster || ''}
-                    controls
-                    muted
-                    playsInline
-                    preload="metadata"
-                    autoPlay
-                    loop
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                <div className="video-card-body video-player-body">
-                  <span className="video-card-label">Featured Video</span>
-                  <h3 className="video-card-title">{activeVideo.title || 'Project Video'}</h3>
-                  <div className="video-player-chip">Featured Reel</div>
-                  <p className="video-card-text">
-                    {activeVideo.description || 'A polished demo clip showing the motion and visual direction behind the project.'}
+        {projectVideos.length > 0 && (
+          <section style={{ background: '#fff', padding: '80px 0' }}>
+            <div className="container">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', gap: '24px', alignItems: 'flex-end', flexWrap: 'wrap' }}
+              >
+                <div>
+                  <span className="section-tag">Video</span>
+                  <h2 className="section-title" style={{ marginBottom: '10px' }}>Project Video</h2>
+                  <p className="section-subtitle" style={{ maxWidth: '62ch' }}>
+                    Watch selected video assets that showcase the concept, motion, and creative direction for this project.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="video-options-grid">
-                {projectVideos.map((video, index) => (
-                  <motion.button
-                    key={index}
-                    type="button"
-                    className={`video-option ${index === activeVideoIndex ? 'video-option--active' : ''}`}
-                    onClick={() => setActiveVideoIndex(index)}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                  >
-                      <div className="video-option-thumb">
-                      <video
-                        src={video.src}
-                        poster={video.poster || ''}
-                        muted
-                        playsInline
-                        preload="metadata"
-                        tabIndex={-1}
-                      />
-                    </div>
-                    <div className="video-option-content">
-                      <h4 className="video-option-title">{video.title || `Video ${index + 1}`}</h4>
-                      <p className="video-option-text">Tap to play this clip</p>
-                    </div>
-                  </motion.button>
-                ))}
+              <div className="video-selection-panel">
+                <div className="video-player-card">
+                  <div className="video-card-media video-player-media">
+                    <video
+                      key={activeVideo.src}
+                      src={activeVideo.src}
+                      poster={activeVideo.poster || ''}
+                      controls
+                      muted
+                      playsInline
+                      preload="metadata"
+                      autoPlay
+                      loop
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <div className="video-card-body video-player-body">
+                    <span className="video-card-label">Featured Video</span>
+                    <h3 className="video-card-title">{activeVideo.title || 'Project Video'}</h3>
+                    <div className="video-player-chip">Featured Reel</div>
+                    <p className="video-card-text">
+                      {activeVideo.description || 'A polished demo clip showing the motion and visual direction behind the project.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="video-options-grid">
+                  {projectVideos.map((video, index) => (
+                    <motion.button
+                      key={index}
+                      type="button"
+                      className={`video-option ${index === activeVideoIndex ? 'video-option--active' : ''}`}
+                      onClick={() => setActiveVideoIndex(index)}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                    >
+                        <div className="video-option-thumb">
+                        <video
+                          src={video.src}
+                          poster={video.poster || ''}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          tabIndex={-1}
+                        />
+                      </div>
+                      <div className="video-option-content">
+                        <h4 className="video-option-title">{video.title || `Video ${index + 1}`}</h4>
+                        <p className="video-option-text">Tap to play this clip</p>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ── Prev / Next ───────────────────────────────────── */}
         <section style={{ background: '#fff', padding: '64px 0', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
@@ -741,16 +857,19 @@ export default function ProjectDetail() {
         .video-card-media {
           position: relative;
           width: 100%;
-          aspect-ratio: 16 / 9;
-          min-height: 360px;
           background: #000;
           overflow: hidden;
           flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 300px;
         }
         .video-card-media video {
           width: 100%;
-          height: 100%;
-          object-fit: cover;
+          height: auto;
+          max-height: 75vh;
+          object-fit: contain;
           display: block;
           background: #000;
         }
@@ -805,11 +924,13 @@ export default function ProjectDetail() {
           overflow: hidden;
         }
         .video-player-media {
-          aspect-ratio: 16 / 9;
-          min-height: 420px;
           background: #000;
           position: relative;
           overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 300px;
         }
         .video-player-media::before {
           content: '';
@@ -821,8 +942,9 @@ export default function ProjectDetail() {
         }
         .video-player-media video {
           width: 100%;
-          height: 100%;
-          object-fit: cover;
+          height: auto;
+          max-height: 75vh;
+          object-fit: contain;
           display: block;
           position: relative;
           z-index: 0;
@@ -878,7 +1000,6 @@ export default function ProjectDetail() {
         .video-option-thumb {
           width: 140px;
           aspect-ratio: 16 / 9;
-          min-height: 84px;
           overflow: hidden;
           border-radius: var(--radius-lg);
           background: #000;
@@ -888,7 +1009,7 @@ export default function ProjectDetail() {
         .video-option-thumb video {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           display: block;
           filter: saturate(0.98) contrast(0.95);
         }
@@ -913,7 +1034,7 @@ export default function ProjectDetail() {
         .video-option-thumb video {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           display: block;
         }
         .video-option-title {
@@ -968,6 +1089,26 @@ export default function ProjectDetail() {
         @media (max-width: 480px) {
           .nav-card { height: 180px !important; }
           .nav-card-title { font-size: 18px !important; }
+        }
+        .live-website-card {
+          position: relative;
+          border-radius: 24px;
+          padding: 80px 48px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 24px;
+          overflow: hidden;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .live-website-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+        }
+        .live-website-card:hover .live-website-bg {
+          transform: scale(1.04);
         }
       `}</style>
     </>
